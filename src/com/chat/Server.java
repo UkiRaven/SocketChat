@@ -91,6 +91,10 @@ public class Server {
                         if (verifyUser(credentials.getUserName(), credentials.getContent())) {
                             out.writeObject(Message.LOGIN_SUCCESS_MESSAGE);
                             username = credentials.getUserName();
+                            writeLastMessages();
+                            connections.add(this);
+                            connectedUsers.add(username);
+                            notifyJoin();
                             break;
                         } else {
                             out.writeObject(Message.INCORRECT_PASSWORD_MESSAGE);
@@ -101,10 +105,6 @@ public class Server {
                 }
 
                 if (!isClosed) {
-                    writeLastMessages();
-                    connections.add(this);
-                    connectedUsers.add(username);
-                    notifyJoin();
                     Message message;
                     while (true) {
                         message = (Message) in.readObject();
